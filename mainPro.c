@@ -351,16 +351,19 @@ int main()
 	pthread_t voiceThread;
 	pthread_t socketThread;
 	pthread_t fireThread;
+
+	/* 初始化树莓派引脚 */
 	if(-1 == wiringPiSetup())
 	{
 			printf("PiSetup init error\n");
             return -1;
     }
+    /* curl库初始化 */
 	curl_global_init(CURL_GLOBAL_ALL); 
-	
+	/* 控制工厂 */
 	pCommandHead = addVoiceControlToInputCommandLink(pCommandHead); 
 	pCommandHead = addSocketControlToInputCommandLink(pCommandHead);
-
+	/* 设备工厂 */
 	pDevicesHead = addFirstFloorLightToDevicesLink(pDevicesHead); 	
 	pDevicesHead = addPoolLightToDevicesLink(pDevicesHead);			
 	pDevicesHead = addBathroomLightToDevicesLink(pDevicesHead);		
@@ -369,7 +372,7 @@ int main()
 	pDevicesHead = addGateLockToDevicesLink(pDevicesHead);				
 	pDevicesHead = addBuzzerToDevicesLink(pDevicesHead);			
 	pDevicesHead = addCameraToDevicesLink(pDevicesHead);
-	
+	/* 线程池 */
 	pthread_create(&fireThread,NULL,fire_thread,NULL);
 	pthread_create(&voiceThread,NULL,voice_thread,NULL);
 	pthread_create(&socketThread,NULL,socket_thread,NULL);
