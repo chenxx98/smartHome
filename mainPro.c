@@ -21,6 +21,12 @@ pthread_t cameraThread;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 int c_fd;
 
+/*
+ * @description		: 遍历设备端工厂查找输出控制设备
+ * @param - name 	: 要查找的设备名
+ * @param - phead 	: 设备端工厂链表
+ * @return 			: 成功,返回该设备结构指针;失败，返回NULL
+ */
 struct Devices* findDeviceByName(char *name,struct Devices *phead)
 {	
 	struct Devices *tmp = phead;
@@ -43,7 +49,12 @@ struct Devices* findDeviceByName(char *name,struct Devices *phead)
 		return NULL;
 	}	
 }
-
+/*
+ * @description		: 遍历控制端工厂查找输入控制设备
+ * @param - name 	: 要查找的设备名
+ * @param - phead 	: 控制端工厂链表
+ * @return 			: 成功,返回该设备结构指针;失败，返回NULL
+ */
 struct inputCommander* findCommandByName(char *name,struct inputCommander *phead)
 {
 	struct inputCommander *tmp = phead;
@@ -65,8 +76,8 @@ struct inputCommander* findCommandByName(char *name,struct inputCommander *phead
 	}	
 }
 
-	
-void * camera_thread(void* datas)
+/* @description:  摄像头线程，处理人脸识别开锁 */	
+void camera_thread(void)
 {
 	pthread_mutex_lock(&mutex);
 	struct Devices *cameraHeadler = NULL;
@@ -89,8 +100,8 @@ void * camera_thread(void* datas)
 	}
 }
 
-
-void * voice_thread(void* datas)
+/* @description:  语音控制线程 */	
+void voice_thread(void)
 {
 	int nread;
 	struct inputCommander *voiceHeadler = NULL;
@@ -123,7 +134,7 @@ void * voice_thread(void* datas)
 			}
 			else
 			{
-			    //printf("do voice control:%s\n",voiceHeadler->command);
+			       // printf("do voice control:%s\n",voiceHeadler->command);
 				pthread_mutex_lock(&mutex);
 				if(strstr(voiceHeadler->command,"01") != NULL)//GPIO5
 				{	
@@ -179,8 +190,8 @@ void * voice_thread(void* datas)
 		}
 	}
 }
-
-void * read_thread(void* datas)
+/* @description:  socket网络数据读取线程 */
+void read_thread(void)
 {
 	int n_read;
 	struct Devices *socketOpenHeadler = NULL;
@@ -257,8 +268,8 @@ void * read_thread(void* datas)
 	}
 
 }
-
-void * socket_thread(void* datas)
+/* @description:  socket网络线程 */
+void socket_thread(void)
 {
 	int n_read = 0;
 	pthread_t readThread;
@@ -284,10 +295,8 @@ void * socket_thread(void* datas)
 		pthread_create(&readThread,NULL,read_thread,NULL);
 	}
 }
-
-
-
-void * fire_thread(void* datas)
+/* @description:  火情监控报警线程 */
+void fire_thread(void)
 {
 	int fire;
 	struct Devices *fireHeadler = NULL;
