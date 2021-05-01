@@ -1,24 +1,5 @@
 #include "controlDevices.h"
 
-/*
-struct Devices
-{
-	char devicesName[128];
-	int status;
-	int pinNum; 
-	
-	int (*open)(int pinNum);
-	int (*close)(int pinNum);
-	int (*devicesInit)(int pinNum);
-
-	int (*readStatus)();
-	int (*changeStatus)(int status);
-
-	struct Devices *next;
-	
-}
-*/
-
 int bathroomLightOpen(int pinNum)
 {
 	digitalWrite(pinNum,LOW);
@@ -35,20 +16,13 @@ int bathroomLightCloseInit(int pinNum)
 	digitalWrite(pinNum,HIGH);
 }
 
-int bathroomLightCloseStatus(int status)
-{
-
-}
-
 struct Devices bathroomLight = {
 
 	.devicesName = "bathroomLight",
-	.pinNum = 24,
+	.pinNum = 1,
 	.open = bathroomLightOpen,
 	.close = bathroomLightClose,
 	.devicesInit = bathroomLightCloseInit,
-	.changeStatus = bathroomLightCloseStatus
-	
 };
 
 struct Devices* addBathroomLightToDevicesLink(struct Devices *phead)
@@ -61,5 +35,4 @@ struct Devices* addBathroomLightToDevicesLink(struct Devices *phead)
 		phead = &bathroomLight;
 	}
 }
-
 

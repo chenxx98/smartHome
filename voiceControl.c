@@ -1,22 +1,18 @@
-
 #include <wiringSerial.h>
 #include <unistd.h>
-#include <string.h>
-
 
 #include "inputCommand.h"
-
 
 int voiceGetCommand(struct inputCommander *voicer)
 {
 	int nread = 0;
-	memset(voicer->command,'\0',sizeof(voicer->command));
+	
 	nread = read(voicer->fd, voicer->command,sizeof(voicer->command));
 
 	return nread;
 }
 
-int voiceInit(struct inputCommander *voicer, char	 *ipAdress, char *port)
+int voiceInit(struct inputCommander *voicer, char *ipAdress, char *port)
 {  
 	int fd;
 	if((fd = serialOpen(voicer->devicesName,9600))==-1){
